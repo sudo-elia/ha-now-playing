@@ -1,0 +1,14 @@
+alias: "Watchlist: Save and Update file"
+triggers:
+  - webhook_id: update_watchlist_json
+    local_only: true
+    allowed_methods:
+      - POST
+    trigger: webhook
+actions:
+  - action: shell_command.save_watchlist_entry
+    data:
+      media: "{{ trigger.json }}"
+  - action: python_script.update_watchlist
+    data:
+      media: "{{ trigger.json }}"

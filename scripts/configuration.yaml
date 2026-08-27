@@ -1,0 +1,21 @@
+command_line:
+  - sensor:
+      name: Watchlist JSON Data
+      unique_id: watchlist_json_data
+      command: >-
+        python3 -c "import json, os; p='/config/www/sc-ha-series/watchlist.json'; data=json.load(open(p)) if os.path.exists(p) and os.path.getsize(p)>0 else {}; print(json.dumps({'series': list(data.values())}))"
+      value_template: "{{ value_json.series | length if value_json is defined and value_json.series is defined else 0 }}"
+      json_attributes:
+        - series
+      scan_interval: 10
+
+homeassistant:
+  allowlist_external_dirs:
+    - "/config/www/sc-ha-series"
+
+python_script:
+
+shell_command:
+  delete_watchlist_entry: python3 /config/python_scripts/delete_watchlist.py {{ title | base64_encode }}
+  save_watchlist_entry: python3 /config/python_scripts/save_watchlist.py "{{ media | to_json | base64_encode }}"
+  update_watchlist_file: python3 /config/python_scripts/save_watchlist.py "{{ media | to_json | base64_encode }}"
